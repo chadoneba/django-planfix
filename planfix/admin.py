@@ -6,5 +6,5 @@ from .models import PlanfixContacts
 
 @admin.register(PlanfixContacts)
 class PlanfixContactsAdmin(admin.ModelAdmin):
-    list_display = ['id','id_contact']
+    list_display = ['id_contact','email']
 

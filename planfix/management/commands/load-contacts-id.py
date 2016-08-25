@@ -11,7 +11,7 @@ class Command(BaseCommand):
             { 'host': settings.PLANFIX_HOST
             , 'api_key': settings.PLANFIX_API_KEY
             , 'private_key': settings.PLANFIX_PRIVATE_KEY
-            , 'project_id': settings.PLANFIX_PROJECT_ID
+            , 'project_id': ''
             , 'user': settings.PLANFIX_USER
             , 'password': settings.PLANFIX_PASS
             , 'account': settings.PLANFIX_ACCOUNT
@@ -20,8 +20,9 @@ class Command(BaseCommand):
         Contacts = apps.get_app_config("planfix").get_model("PlanfixContacts")
         counter = 1
         while True:
-            res = planfix.contact_get_list(counter)
-            if res.__len__() > 0 and not res:
+            res = planfix.contact_get_list(cur_page=counter)
+            self.stdout.write(self.style.SUCCESS('%s - %s ' % (counter,res.__len__())))
+            if res.__len__() > 0 and res:
                 for i in res:
                     contact = Contacts()
                     contact.email = i[1]

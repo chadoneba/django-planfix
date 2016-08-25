@@ -88,7 +88,6 @@ class PlanFix(PlanFixBase):
             response = ElementTree.fromstring(self.connect(**params))
             rt = response.find('contacts')
             total = rt.attrib['totalCount']
-            print total
             for item in rt:
                 result.append((item.find('id').text, item.find('email').text))
             return result
