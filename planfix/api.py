@@ -39,7 +39,7 @@ class PlanFix(PlanFixBase):
         self.name = ""
         self.scheme = []
 
-    def project_get_list(self,cur_page=1):
+    def project_get_list(self,cur_page=1,target='all'):
         result = []
         if not str(cur_page).isdigit():
             cur_page = 1
@@ -49,11 +49,13 @@ class PlanFix(PlanFixBase):
                 'account'
                 , 'sid'
                 , 'pageCurrent'
+                , 'target'
             }
         params = \
             { 'account':self.account
             , 'sid':self.sid
             , 'pageCurrent':str(cur_page)
+            , 'target':target
             }
         try:
             response = ElementTree.fromstring(self.connect(**params))
@@ -64,8 +66,10 @@ class PlanFix(PlanFixBase):
         except AttributeError as e:
             print e.message
 
-    def contact_get_list(self):
+    def contact_get_list(self,cur_page=1):
         result = []
+        if not str(cur_page).isdigit():
+            cur_page = 1
         self.name = 'contact.getList'
         self.scheme = \
             {
@@ -77,7 +81,7 @@ class PlanFix(PlanFixBase):
         params = \
             { 'account': self.account
             , 'sid': self.sid
-            , 'pageCurrent': '1'
+            , 'pageCurrent': str(cur_page)
             , 'pageSize': '100'
              }
         try:
