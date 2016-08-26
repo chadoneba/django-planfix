@@ -8,3 +8,8 @@ from .models import PlanfixContacts
 class PlanfixContactsAdmin(admin.ModelAdmin):
     list_display = ['id_contact','email']
 
+
+
+
+
+
