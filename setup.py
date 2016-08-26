@@ -10,14 +10,14 @@ except ImportError:
 
 setup(
     name='django-planfix',
-    version='0.2',
+    version='0.3',
     description='Add contanct and task to Planfix',
     author='Mikhail Maltsev',
     author_email='drumsland@gmail.com',
     url='https://github.com/chadoneba/django-planfix',
     long_description=open('README.rst', 'r').read(),
     packages=[
-        'planfix','planfix.management.commands','planfix.migrations'
+        'planfix','planfix.management.commands','planfix.migrations','planfix.management'
     ],
     zip_safe=False,
     requires=[
