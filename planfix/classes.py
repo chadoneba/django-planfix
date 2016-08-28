@@ -1,22 +1,22 @@
 import requests
 from hashlib import md5
 from xml.etree import ElementTree
-from django.core.cache import cache
+#from django.core.cache import cache
 
-# class Cache(object):
-#     params = {}
-#
-#     def get(self,key):
-#         if self.params.has_key(key):
-#             return self.params[key]
-#         else:
-#             return None
-#
-#     def set(self,key,value,timeout):
-#         self.params[key] = value
-#
-#
-# cache = Cache()
+class Cache(object):
+    params = {}
+
+    def get(self,key):
+        if self.params.has_key(key):
+            return self.params[key]
+        else:
+            return None
+
+    def set(self,key,value,timeout):
+        self.params[key] = value
+
+
+cache = Cache()
 
 
 class PlanFixBase(object):
@@ -76,7 +76,10 @@ class PlanFixBase(object):
             else:
                 tmp_key, tmp_val = item.items()[0]
                 if not isinstance(tmp_val, list):
-                    result_list.append(self.get_value(tmp_val, **kwargs))
+                    if tmp_val == 'id':
+                        result_list.append(self.get_value(tmp_key, **kwargs))
+                    else:
+                        result_list.append(self.get_value(tmp_val, **kwargs))
                 else:
                     result_list.append(self.string_by_schemefileds(tmp_val, **kwargs))
         return "".join(result_list)
@@ -95,7 +98,10 @@ class PlanFixBase(object):
             else:
                 tmp_key, tmp_val = item.items()[0]
                 if not isinstance(tmp_val, list):
-                    sub_result = template % (tmp_val, self.get_value(tmp_val, **kwargs), tmp_val)
+                    if tmp_val == 'id':
+                        sub_result = template % (tmp_val, self.get_value(tmp_key, **kwargs), tmp_val)
+                    else:
+                        sub_result = template % (tmp_val, self.get_value(tmp_key, **kwargs), tmp_val)
                 else:
                     sub_result = self.create_xml_by_scheme(tmp_val, **kwargs)
                 result += template % (tmp_key, sub_result, tmp_key)
@@ -110,6 +116,7 @@ class PlanFixBase(object):
         r = requests.post(self.host, data=data, auth=(self.api_key, ""))
         if self.name != 'auth.login':
             if self.is_session_valid(r.content):
+                print r.content
                 return r.content
             else:
                 tmp_params = dict(name=self.name,scheme=self.scheme)
