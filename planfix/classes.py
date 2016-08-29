@@ -78,6 +78,10 @@ class PlanFixBase(object):
                 if not isinstance(tmp_val, list):
                     if tmp_val == 'id':
                         result_list.append(self.get_value(tmp_key, **kwargs))
+                    elif tmp_val == 'customValue':
+                        res = self.get_value(tmp_key, **kwargs)
+                        if not res == '' and isinstance(res, list):
+                            result_list.append("".join(["".join([str(i[0]),i[1]]) for i in res]))
                     else:
                         result_list.append(self.get_value(tmp_val, **kwargs))
                 else:
@@ -92,6 +96,7 @@ class PlanFixBase(object):
     def create_xml_by_scheme(self,element, **kwargs):
         result = ""
         template = "<%s>%s</%s>"
+        custom_data_template = "<id>%s</id><value>%s</value>"
         for item in element:
             if not isinstance(item, dict):
                 result += template % (item, self.get_value(item, **kwargs), item)
@@ -100,6 +105,10 @@ class PlanFixBase(object):
                 if not isinstance(tmp_val, list):
                     if tmp_val == 'id':
                         sub_result = template % (tmp_val, self.get_value(tmp_key, **kwargs), tmp_val)
+                    elif tmp_val == 'customValue':
+                        res = self.get_value(tmp_key, **kwargs)
+                        if not res == '' and isinstance(res,list):
+                            sub_result = "".join([template % (tmp_val,(custom_data_template % i),tmp_val) for i in res])
                     else:
                         sub_result = template % (tmp_val, self.get_value(tmp_key, **kwargs), tmp_val)
                 else:
@@ -116,7 +125,6 @@ class PlanFixBase(object):
         r = requests.post(self.host, data=data, auth=(self.api_key, ""))
         if self.name != 'auth.login':
             if self.is_session_valid(r.content):
-                print r.content
                 return r.content
             else:
                 tmp_params = dict(name=self.name,scheme=self.scheme)
