@@ -14,7 +14,7 @@ class PlanFix(PlanFixBase):
                            , 'description'
                            , 'importance'
                            , 'status'
-                           , 'owner'
+                           , {'owner':'id'}
                            , 'statusSet'
                            , 'checkResult'
                            , {'project': 'id'}
@@ -26,6 +26,7 @@ class PlanFix(PlanFixBase):
                            , 'endDate'
                            , 'endTimeIsSet'
                            , 'endTime'
+                           , {'customData':'customValue'}
                         ]
                    }
              ]
@@ -89,7 +90,7 @@ class PlanFix(PlanFixBase):
             rt = response.find('contacts')
             total = rt.attrib['totalCount']
             for item in rt:
-                result.append((item.find('id').text, item.find('email').text))
+                result.append((item.find('userid').text, item.find('email').text))
             return result
         except AttributeError as e:
             print e.message
@@ -126,6 +127,32 @@ class PlanFix(PlanFixBase):
         try:
             response = ElementTree.fromstring(self.connect(**kwargs))
             return [(response.find('contact').find('id').text,response.find('contact').find('general').text)]
+        except AttributeError as e:
+            print e.message
+
+    def task_get_list(self,target='template'):
+        result = []
+        self.name = 'task.getList'
+        self.custom_scheme = []
+        self.scheme = \
+            {
+                'account'
+                , 'sid'
+                , 'target'
+                , 'pageCurrent'
+            }
+        params = \
+            {'account': self.account
+                , 'sid': self.sid
+                , 'pageCurrent': '1'
+                , 'target': target
+             }
+        try:
+            response = ElementTree.fromstring(self.connect(**params))
+            rt = response.find('tasks')
+            for item in rt:
+                result.append((item.find('id').text,item.find('title').text))
+            return result
         except AttributeError as e:
             print e.message
 

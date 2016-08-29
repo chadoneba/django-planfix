@@ -18,6 +18,9 @@ class Command(BaseCommand):
              }
         planfix = PlanFix(**params)
         Contacts = apps.get_app_config("planfix").get_model("PlanfixContacts")
+        if Contacts.objects.all().count() > 0:
+            self.stdout.write(self.style.SUCCESS('Contast was download'))
+            return
         counter = 1
         while True:
             res = planfix.contact_get_list(cur_page=counter)
