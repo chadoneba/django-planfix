@@ -41,6 +41,7 @@ class PlanFixBase(object):
     account = ""
     level = 0
     sid = None
+    debug = False
 
     def __init__(self,*args,**kwargs):
         self.sid = cache.get('planfix_sid')
@@ -121,10 +122,13 @@ class PlanFixBase(object):
             kwargs['sid'] = self.sid
         self.get_sign(**kwargs)
         body = self.create_xml_by_scheme(self.scheme, **kwargs)
+        self.print_debug(body)
         data = self.request_templ.format(self.name,body.encode('utf-8'),self.sign)
         r = requests.post(self.host, data=data, auth=(self.api_key, ""))
         if self.name != 'auth.login':
             if self.is_session_valid(r.content):
+                if self.debug:
+                    self.print_debug(r.content)
                 return r.content
             else:
                 tmp_params = dict(name=self.name,scheme=self.scheme)
@@ -162,3 +166,7 @@ class PlanFixBase(object):
             res = response.find('sid')
             self.sid = res.text
             cache.set('planfix_sid',self.sid,self.CACHE_TIMELIFE*60)
+
+    def print_debug(self,msg):
+        if self.debug:
+            print msg
