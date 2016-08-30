@@ -41,7 +41,7 @@ class PlanFixBase(object):
     account = ""
     level = 0
     sid = None
-    debug = False
+    debug = None
 
     def __init__(self,*args,**kwargs):
         self.sid = cache.get('planfix_sid')
@@ -127,8 +127,7 @@ class PlanFixBase(object):
         r = requests.post(self.host, data=data, auth=(self.api_key, ""))
         if self.name != 'auth.login':
             if self.is_session_valid(r.content):
-                if self.debug:
-                    self.print_debug(r.content)
+                self.print_debug(r.content)
                 return r.content
             else:
                 tmp_params = dict(name=self.name,scheme=self.scheme)
@@ -168,5 +167,8 @@ class PlanFixBase(object):
             cache.set('planfix_sid',self.sid,self.CACHE_TIMELIFE*60)
 
     def print_debug(self,msg):
-        if self.debug:
-            print msg
+        if  hasattr(self.debug,'__call__'):
+            try:
+                self.debug(msg)
+            except TypeError as e:
+                print e
