@@ -81,7 +81,7 @@ class PlanFixBase(object):
                     elif tmp_val == 'customValue':
                         res = self.get_value(tmp_key, **kwargs)
                         if not res == '' and isinstance(res, list):
-                            result_list.append("".join(["".join([str(i[0]),i[1]]) for i in res]))
+                            result_list.append("".join(["".join([str(i[0]),str(i[1])]) for i in res]))
                     else:
                         result_list.append(self.get_value(tmp_val, **kwargs))
                 else:
