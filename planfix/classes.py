@@ -121,12 +121,10 @@ class PlanFixBase(object):
             kwargs['sid'] = self.sid
         self.get_sign(**kwargs)
         body = self.create_xml_by_scheme(self.scheme, **kwargs)
-        print body
         data = self.request_templ.format(self.name,body.encode('utf-8'),self.sign)
         r = requests.post(self.host, data=data, auth=(self.api_key, ""))
         if self.name != 'auth.login':
             if self.is_session_valid(r.content):
-                print r.content
                 return r.content
             else:
                 tmp_params = dict(name=self.name,scheme=self.scheme)
