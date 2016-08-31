@@ -32,8 +32,8 @@ class PlanFix(PlanFixBase):
              ]
 
         try:
-            response = ElementTree.fromstring(self.connect(**params))
-            return response.find('task').find("id")
+            response = ElementTree.fromstring(self.connect(**kwargs))
+            return response.find('task').find("id").text
         except AttributeError as e:
             return None
 
