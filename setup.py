@@ -10,7 +10,7 @@ except ImportError:
 
 setup(
     name='django-planfix',
-    version='0.3',
+    version='0.4',
     description='Add contanct and task to Planfix',
     author='Mikhail Maltsev',
     author_email='drumsland@gmail.com',
