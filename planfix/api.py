@@ -32,9 +32,10 @@ class PlanFix(PlanFixBase):
              ]
 
         try:
-            self.connect(**kwargs)
+            response = ElementTree.fromstring(self.connect(**params))
+            return response.find('task').find("id")
         except AttributeError as e:
-            print e.message
+            return None
 
     def change_status_task(self, id, status):
         self.name = ""
@@ -65,7 +66,7 @@ class PlanFix(PlanFixBase):
                 result.append((item.find('id').text,item.find('title').text))
             return result
         except AttributeError as e:
-            print e.message
+            return None
 
     def contact_get_list(self,cur_page=1,search = ''):
         result = []
@@ -95,7 +96,7 @@ class PlanFix(PlanFixBase):
                 result.append((item.find('userid').text, item.find('email').text))
             return result
         except AttributeError as e:
-            print e.message
+            return None
 
     def contact_get(self,**kwargs):
         result = []
@@ -113,7 +114,7 @@ class PlanFix(PlanFixBase):
             response = ElementTree.fromstring(self.connect(**kwargs))
             return response.find('contact').find('userid').text
         except AttributeError as e:
-            print e.message
+            return None
 
     def contact_add(self,**kwargs):
         result = []
@@ -175,5 +176,5 @@ class PlanFix(PlanFixBase):
                 result.append((item.find('id').text,item.find('title').text))
             return result
         except AttributeError as e:
-            print e.message
+            return None
 
