@@ -1,22 +1,22 @@
 import requests
 from hashlib import md5
 from xml.etree import ElementTree
-from django.core.cache import cache
+# from django.core.cache import cache
 
-# class Cache(object):
-#     params = {}
-#
-#     def get(self,key):
-#         if self.params.has_key(key):
-#             return self.params[key]
-#         else:
-#             return None
-#
-#     def set(self,key,value,timeout):
-#         self.params[key] = value
-#
-#
-# cache = Cache()
+class Cache(object):
+    params = {}
+
+    def get(self,key):
+        if self.params.has_key(key):
+            return self.params[key]
+        else:
+            return None
+
+    def set(self,key,value,timeout):
+        self.params[key] = value
+
+
+cache = Cache()
 
 
 class PlanFixBase(object):

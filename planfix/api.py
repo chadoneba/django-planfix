@@ -67,7 +67,7 @@ class PlanFix(PlanFixBase):
         except AttributeError as e:
             print e.message
 
-    def contact_get_list(self,cur_page=1):
+    def contact_get_list(self,cur_page=1,search = ''):
         result = []
         if not str(cur_page).isdigit():
             cur_page = 1
@@ -78,12 +78,14 @@ class PlanFix(PlanFixBase):
             , 'sid'
             , 'pageCurrent'
             , 'pageSize'
+            , 'search'
             }
         params = \
             { 'account': self.account
             , 'sid': self.sid
             , 'pageCurrent': str(cur_page)
             , 'pageSize': '100'
+            , 'search':search
              }
         try:
             response = ElementTree.fromstring(self.connect(**params))
@@ -92,6 +94,24 @@ class PlanFix(PlanFixBase):
             for item in rt:
                 result.append((item.find('userid').text, item.find('email').text))
             return result
+        except AttributeError as e:
+            print e.message
+
+    def contact_get(self,**kwargs):
+        result = []
+        self.name = 'contact.get'
+        self.scheme = \
+            ['account'
+                , 'sid'
+                , {'contact': \
+                    [ 'id'
+                    , 'general'
+                    ]
+                   }
+            ]
+        try:
+            response = ElementTree.fromstring(self.connect(**kwargs))
+            return response.find('contact').find('userid').text
         except AttributeError as e:
             print e.message
 
@@ -126,9 +146,10 @@ class PlanFix(PlanFixBase):
 
         try:
             response = ElementTree.fromstring(self.connect(**kwargs))
-            return [(response.find('contact').find('id').text,response.find('contact').find('general').text)]
+            return response.find('contact').find('userid').text
         except AttributeError as e:
-            print e.message
+            if e.message == '8007':
+                return self.contact_get_list(search=kwargs['email'])[0][0]
 
     def task_get_list(self,target='template'):
         result = []
