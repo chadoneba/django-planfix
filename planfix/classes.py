@@ -2,12 +2,12 @@ import requests
 from hashlib import md5
 from xml.etree import ElementTree
 from django.core.cache import cache
-
+from functools import cmp_to_key
 # class Cache(object):
 #     params = {}
 #
 #     def get(self,key):
-#         if self.params.has_key(key):
+#         if key in self.params:
 #             return self.params[key]
 #         else:
 #             return None
@@ -69,7 +69,7 @@ class PlanFixBase(object):
     def string_by_schemefileds(self,element,**kwargs):
         result_list = []
         element = list(element)
-        element.sort(cmp=self.scheme_sort)
+        sorted(element,key=cmp_to_key(self.scheme_sort))
         for item in element:
             if not isinstance(item, dict):
                 tmp_item = self.get_value(item,)
@@ -90,7 +90,7 @@ class PlanFixBase(object):
         return "".join(result_list)
 
     def get_value(self,value, **kwargs):
-        if kwargs.has_key(value):
+        if value in kwargs:
             return kwargs.get(value)
         return ''
 
@@ -118,7 +118,7 @@ class PlanFixBase(object):
         return result
 
     def connect(self,**kwargs):
-        if not kwargs.has_key('sid') and self.sid:
+        if not 'sid' in kwargs and self.sid:
             kwargs['sid'] = self.sid
         self.get_sign(**kwargs)
         body = self.create_xml_by_scheme(self.scheme, **kwargs)
@@ -171,4 +171,4 @@ class PlanFixBase(object):
             try:
                 self.debug(msg)
             except TypeError as e:
-                print e
+                print(e)

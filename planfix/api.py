@@ -1,4 +1,4 @@
-from classes import PlanFixBase
+from .classes import PlanFixBase
 from xml.etree import ElementTree
 
 
